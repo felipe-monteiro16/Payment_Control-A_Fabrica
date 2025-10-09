@@ -1,6 +1,7 @@
 """Mercado Pago API integration for payment links."""
 import os
 import sys
+import re
 from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
 import mercadopago
@@ -179,17 +180,20 @@ def get_paid_debts() -> list[int]:
         "end_date": end_date_str
     })
 
+    # Regex pattern to validate userId_MM_YY format (all numeric)
+    pattern = re.compile(r'^(\d+)_(\d{2})_(\d{2})$')
+
     # Filter the payments
-    filtered_payments = [
-        payment["external_reference"]
-        for payment in search_result["response"]["results"]
+    filtered_payments = []
+    for payment in search_result["response"]["results"]:
         if (
             datetime.fromisoformat(payment["date_created"]).month == datetime.now().month and
             datetime.fromisoformat(payment["date_created"]).year == datetime.now().year and
             payment["status"] == "approved" and
-            payment["external_reference"] is not None
-        )
-    ]
+            payment["external_reference"] is not None and
+            pattern.match(payment["external_reference"])  # Validate format
+        ):
+            filtered_payments.append(payment["external_reference"])
 
     # Extract user IDs from the approved payments
     user_ids = [int(ref.split("_")[0]) for ref in filtered_payments]
