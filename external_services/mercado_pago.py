@@ -50,7 +50,11 @@ class PaymentData:
 
     def has_debts(self):
         """Check if the user has debts."""
-        return bool(self.user_debts)
+        if bool(self.user_debts):
+            for debt in self.user_debts:
+                if debt.value > 0:
+                    return True
+        return False
 
 
     def get_taxes(self):
@@ -104,7 +108,7 @@ def create_payment_link(user_debts, user_id) -> tuple[str, list[Debt]]:
 
     # Check if the user has debt
     if not payment_data.has_debts():
-        print("User has no debts.")
+        print(f"User {user_id} has no debts.")
         return None, None
 
     # Get the Mercado Pago SDK settings

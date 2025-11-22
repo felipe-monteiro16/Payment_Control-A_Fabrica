@@ -41,7 +41,7 @@ def get_access_token(clt) -> None:
 def check_file_access_token(clt):
     """Check if the access token file exists."""
     if os.path.exists(ACCESS_TOKEN_PATH):
-        print("Access token file found.\n")
+        # Access token found
         return True
     print("Access token file not found.")
     print("Let's get a new access token.\n")
@@ -99,7 +99,7 @@ def initialize_client() -> str:
 
     # Set the Splitwise client
     clt = Splitwise(consumer_key, consumer_secret, api_key=api_key)
-    print("\nEnvironment variables loaded successfully.\n")
+    # Env loaded successfully
 
     # Check if the environment variables are set
     try:
@@ -108,7 +108,7 @@ def initialize_client() -> str:
         print("Unauthorized access. Please set the correct Splitwise keys on .env file.\n")
         print(e)
         sys.exit()
-    print("Client initialized successfully.\n")
+    # Client loaded successfully
     return clt
 
 
@@ -120,5 +120,5 @@ def config()-> tuple:
     # Load the access token from the file
     access_token = load_access_token(client)
 
-    print("Access token loaded successfully.\n")
+    # Access token loaded successfully
     return client, access_token
