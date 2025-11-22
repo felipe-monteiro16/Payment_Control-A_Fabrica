@@ -27,26 +27,35 @@ def get_user_debts(user_id: int) -> None:
     # Initialize the Data Access Layer
     data_access = DataAccess()
 
-    # Get user debts from Splitwise API
-    user_debts = data_access.get_user_debts(user_id)
+    # Verify the id existance
+    if data_access.verify_id_existance(user_id):
+        # Get user debts from Splitwise API
+        user_debts = data_access.get_user_debts(user_id)
 
-    # Show user debts in the CLI
-    show_user_debts(user_debts)
+        # Show user debts in the CLI
+        show_user_debts(user_debts)
+    else:
+        print(f"ID not found: {user_id}")
 
 
 @app.command()
 def create_payment_link(user_id: int,) -> None:
     """Get the payment link for the given user_id."""
+
     # Initialize the Data Access Layer
     data_access = DataAccess()
     external_services = ExternalServices()
 
-    # Create payment link
-    user_debts = data_access.get_user_debts(user_id)
-    payment_link, payment_items = external_services.create_payment_link(user_debts, user_id)
+    # Verify the id existance
+    if data_access.verify_id_existance(user_id):
+        # Create payment link
+        user_debts = data_access.get_user_debts(user_id)
+        payment_link, payment_items = external_services.create_payment_link(user_debts, user_id)
 
-    # Show payment link in the CLI
-    show_payment_link(payment_link, payment_items)
+        # Show payment link in the CLI
+        show_payment_link(payment_link, payment_items)
+    else:
+        print(f"ID not found: {user_id}")
 
 
 @app.command()
@@ -56,16 +65,20 @@ def send_payment_link(user_id: int) -> None:
     data_access = DataAccess()
     external_services = ExternalServices()
 
-    # Create payment link
-    user_debts = data_access.get_user_debts(user_id)
-    payment_link, payment_items = external_services.create_payment_link(user_debts, user_id)
+    # Verify the id existance
+    if data_access.verify_id_existance(user_id):
+        # Create payment link
+        user_debts = data_access.get_user_debts(user_id)
+        payment_link, payment_items = external_services.create_payment_link(user_debts, user_id)
 
-    # Send to the user
-    user_contact = data_access.get_user_contact(user_id)
-    external_services.send_debt_to_user(user_contact, payment_link, payment_items)
+        # Send to the user
+        user_contact = data_access.get_user_contact(user_id)
+        external_services.send_debt_to_user(user_contact, payment_link, payment_items)
 
-    # Show payment link in the CLI
-    show_payment_link(payment_link, payment_items)
+        # Show payment link in the CLI
+        show_payment_link(payment_link, payment_items)
+    else:
+        print(f"ID not found: {user_id}")
 
 
 @app.command()
@@ -100,6 +113,34 @@ def get_paid_debts():
 
     # Send payments to Splitwise API
     data_access.send_payments(paid_users)
+
+
+@app.command()
+def send_more_payment_link():
+    """Send the payment link to all the ids on txt file"""
+    # Initialize the External Services and Data Access Layer
+    data_access = DataAccess()
+    external_services = ExternalServices()
+
+    # Get the id list from txt
+    id_list = data_access.get_ids_by_txt()
+
+    for item in id_list:
+        # handle id in splitwise
+        if data_access.verify_id_existance(item):
+            # Create payment link
+            user_debts = data_access.get_user_debts(item)
+            payment_link, payment_items = external_services.create_payment_link(user_debts, item)
+
+            # Send to the user
+            user_contact = data_access.get_user_contact(item)
+            external_services.send_debt_to_user(user_contact, payment_link, payment_items)
+
+            # Show payment link in the CLI
+            show_payment_link(payment_link, payment_items)
+        else:
+            print(f"ID not found {item}")
+        print()
 
 if __name__ == "__main__":
     app()

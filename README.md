@@ -14,12 +14,8 @@ pip install poetry
 Then, install depencencies by running:
 
 ```
+poetry env activate
 poetry install
-```
-
-Temporary: If it gets an error, try:
-```
-poery install --no-root
 ```
 
 ### File `.env`
@@ -148,3 +144,20 @@ poetry run python main.py --help
     poetry run python main.py get-paid-debts
     ```
     Paid users will be processed and their payments sent to Splitwise.
+
+* `send-more-payment-link:` Send the payment link to all the ids on txt file   
+
+    On `core/src/users.txt` you must to put all the ids that you want to send link, invalid ids will be skipped.
+    Example:
+    ```
+    0000001
+    0000002
+    0000003
+    ``` 
+    Usage Example:
+    ```
+    poetry run python main.py send-more-payment-link
+    ```
+
+    The payment link will be sent to all users on file.
+

@@ -20,3 +20,4 @@ trash/
 # Ignore csv and json files
 *.csv
 *.json
+*.txt

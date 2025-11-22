@@ -1,7 +1,7 @@
 """Data Access Layer for Splitwise API"""
 from config.splitwise_config import config
-from .splitwise import get_all_users, get_user_debts, create_user_debts, send_payments
-from .csv_manager import get_number_from_csv, get_debts_from_csv
+from .splitwise import get_all_users, get_user_debts, create_user_debts, send_payments, verify_id_existance
+from .csv_manager import get_number_from_csv, get_debts_from_csv, get_ids_by_txt
 
 class DataAccess:
     """Data Access Layer for Splitwise API"""
@@ -39,3 +39,13 @@ class DataAccess:
     def send_payments(self, paid_users: list[int]):
         """Send payments to the Splitwise API."""
         return send_payments(self.client, paid_users)
+
+
+    def get_ids_by_txt(self):
+        """Get the users ids by the txt file"""
+        return get_ids_by_txt()
+
+
+    def verify_id_existance(self, user_id):
+        """Verify if the id is on the friends list on splitwise"""
+        return verify_id_existance(self.client, user_id)

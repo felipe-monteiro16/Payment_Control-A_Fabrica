@@ -236,3 +236,14 @@ def send_payments(client, paid_users: list[int]):
             else:
                 print("No specific error was returned.")
         print()
+
+
+def verify_id_existance(client, user_id):
+    """Verify if the friends list id contains the user_id"""
+    friends_list = []
+    friends = client.getFriends()
+
+    for friend in friends:
+        friends_list.append(friend.getId())
+
+    return user_id in friends_list
