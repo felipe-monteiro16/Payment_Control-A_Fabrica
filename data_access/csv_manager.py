@@ -8,12 +8,13 @@ from core import ExpenseDebt, Contact
 def get_number_from_csv(user_id) -> List[Dict[str, Any]]:
     """Get the contact information for a given user_id from a CSV file."""
     user = Contact(name="", phone_number="")
-    file_path = "core/src/contacts.csv"
+    file_path = "data_access/src/contacts.csv"
 
     # Handle if file exists
     path = Path(file_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     if not path.exists():
+        print(f"File [{file_path}] not found.")
         return user
 
     # Open the CSV file and read its contents
@@ -54,14 +55,14 @@ def get_debts_from_csv(csv_path: str, user_id: str) -> tuple[list, float]:
 
 def get_ids_by_txt() -> List[int]:
     """Function to get the users ids from the txt file"""
-    txt_path = "core/src/users.txt"
+    txt_path = "data_access/src/users.txt"
     ids_list = list()
     path = Path(txt_path)
 
     # Verify if the file exists, then create if missing
     path.parent.mkdir(parents=True, exist_ok=True)
     if not path.exists():
-        print("Sem Arquivo")
+        print(f"File {txt_path} not found.")
         path.touch()
         return []
 
@@ -77,6 +78,7 @@ def get_ids_by_txt() -> List[int]:
         if item.isdigit():
             ids_list[key] = int(item)
         else:
+            print("Invalid ID found.")
             return []
     return ids_list
     
